@@ -1,2 +1,2 @@
-# drgv-bot
-DRGV multi-purpose discord bot
+# moneybot
+money bot for discord
