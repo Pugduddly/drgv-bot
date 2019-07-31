@@ -54,9 +54,14 @@ if (cluster.isWorker) {
             let commands1 = '';
     
             commands1 += config.prefix + 'balance, ';
-            commands1 += config.prefix + 'pay, ';
-            commands1 += config.prefix + 'print (admins only)';
-            commands1 += config.prefix + 'shred (admins only)';
+            commands1 += config.prefix + 'pay';
+
+            if (message.member.hasPermission('MANAGE_GUILD')) {
+                commands1 += ', ';
+                commands1 += config.prefix + 'print (admins only), ';
+                commands1 += config.prefix + 'shred (admins only), ';
+                commands1 += config.prefix + 'units (admins only), ';
+            }
     
             const helpEmbed = new Discord.RichEmbed()
                 .setColor('#85bb65')
@@ -85,7 +90,7 @@ if (cluster.isWorker) {
             if (balance === undefined)
                 balance = 0;
 
-            sendEmbedMsg(message.channel, user.username + ' has ' + balance + ' ' + guildData.units + '.');
+            sendEmbedMsg(message.channel, user.username + '\'s balance is ' + balance + ' ' + guildData.units + '.');
         } else if (command === 'pay') {
             let guildData = db.get(message.guild.id).value();
             if (guildData === undefined || guildData === {}) {
@@ -232,6 +237,28 @@ if (cluster.isWorker) {
                 }
                 
                 sendEmbedMsg(message.channel, 'Shredded ' + amount + ' ' + guildData.units + '.');
+
+                db.set(message.guild.id, guildData).write();
+                
+            }
+        } else if (command === 'units') {
+            if (!message.member.hasPermission('MANAGE_GUILD')) {
+                sendEmbedMsg(message.channel, 'This command requires the "Manage Server" permission.');
+            } else {
+                let guildData = db.get(message.guild.id).value();
+                if (guildData === undefined || guildData === {}) {
+                    guildData = {};
+                    guildData.balance = {};
+                }
+
+                if (args.length != 1) {
+                    sendEmbedMsg(message.channel, 'Usage: ' + config.prefix + 'units <unit name>');
+                    return;
+                }
+
+                guildData.units = args[0];
+            
+                sendEmbedMsg(message.channel, 'Set units to "' + guildData.units + '".');
 
                 db.set(message.guild.id, guildData).write();
                 
