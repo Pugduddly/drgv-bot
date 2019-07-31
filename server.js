@@ -71,7 +71,7 @@ if (cluster.isWorker) {
                 .setFooter(username, avatarURL);
     
             message.channel.send(helpEmbed);
-        } else if (command === 'balance') {
+        } else if (command === 'balance' || command === 'bal') {
             let guildData = db.get(message.guild.id).value();
             if (guildData === undefined || guildData === {}) {
                 guildData = {};
