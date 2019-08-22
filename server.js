@@ -81,7 +81,7 @@ if (cluster.isWorker) {
             }
             
             let balance = guildData.balance[user.id];
-            if (balance === undefined || balance === NaN || balance === Infinity)
+            if (balance === undefined || balance === NaN || balance === Infinity || balance === null)
                 balance = 0;
 
             sendEmbedMsg(message.channel, user.username + '\'s balance is ' + balance + ' ' + guildData.units + '.');
