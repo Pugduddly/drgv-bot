@@ -123,10 +123,10 @@ if (cluster.isWorker) {
                 receiver = receiver.user;
             }
 
-            if (guildData.balance[message.author.id] === undefined || guildData.balance[message.author.id] === NaN || guildData.balance[message.author.id] === Infinity)
+            if (guildData.balance[message.author.id] === undefined || ((guildData.balance[message.author.id] === NaN || guildData.balance[message.author.id] === Infinity) && message.member.hasPermission('MANAGE_GUILD')))
                 guildData.balance[message.author.id] = 0;
                 
-            if (guildData.balance[receiver.id] === undefined || guildData.balance[receiver.id] === NaN || guildData.balance[receiver.id] === Infinity)
+            if (guildData.balance[receiver.id] === undefined || ((guildData.balance[receiver.id] === NaN || guildData.balance[receiver.id] === Infinity) && receiver.hasPermission('MANAGE_GUILD')))
                 guildData.balance[receiver.id] = 0;
                 
             guildData.balance[message.author.id] -= amount;
@@ -156,7 +156,8 @@ if (cluster.isWorker) {
                     return;
                 }
 
-                let receiver = (message.mentions.members.first() || message.member).user;
+                let receiverMember = message.mentions.members.first() || message.member;
+                let receiver = receiverMember.user;
                 let amount = undefined;
 
                 for (let i = 0; i < args.length; i ++) {
@@ -175,7 +176,7 @@ if (cluster.isWorker) {
                     return;
                 }
 
-                if (guildData.balance[receiver.id] === undefined || guildData.balance[receiver.id] === NaN || guildData.balance[receiver.id] === Infinity)
+                if (guildData.balance[receiver.id] === undefined || ((guildData.balance[receiver.id] === NaN || guildData.balance[receiver.id] === Infinity) & receiverMember.hasPermission('MANAGE_GUILD')))
                     guildData.balance[receiver.id] = 0;
                     
                 guildData.balance[receiver.id] += amount;
@@ -201,7 +202,8 @@ if (cluster.isWorker) {
                     return;
                 }
 
-                let receiver = (message.mentions.members.first() || message.member).user;
+                let receiverMember = message.mentions.members.first() || message.member;
+                let receiver = receiverMember.user;
                 let amount = undefined;
 
                 for (let i = 0; i < args.length; i ++) {
@@ -220,7 +222,7 @@ if (cluster.isWorker) {
                     return;
                 }
 
-                if (guildData.balance[receiver.id] === undefined || guildData.balance[receiver.id] === NaN || guildData.balance[receiver.id] === Infinity)
+                if (guildData.balance[receiver.id] === undefined || ((guildData.balance[receiver.id] === NaN || guildData.balance[receiver.id] === Infinity) && receiverMember.hasPermission('MANAGE_GUILD')))
                     guildData.balance[receiver.id] = 0;
                     
                 guildData.balance[receiver.id] -= amount;
