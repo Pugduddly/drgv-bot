@@ -74,17 +74,17 @@ if (cluster.isWorker) {
                 db.set(message.guild.id, guildData).write();
             }
 
-            let user = message.author;
+            let user = message.member;
 
             if (message.member.hasPermission('MANAGE_GUILD')) {
-                user = (message.mentions.members.first() || message.member).user;
+                user = (message.mentions.members.first() || message.member);
             }
             
             let balance = guildData.balance[user.id];
-            if (balance === undefined || balance === NaN || balance === Infinity || balance === null)
+            if (balance === undefined || ((balance === NaN || balance === Infinity || balance === null) && !user.hasPermission('MANAGE_GUILD')))
                 balance = 0;
 
-            sendEmbedMsg(message.channel, user.username + '\'s balance is ' + balance + ' ' + guildData.units + '.');
+            sendEmbedMsg(message.channel, user.user.username + '\'s balance is ' + balance + ' ' + guildData.units + '.');
         } else if (command === 'pay') {
             let guildData = db.get(message.guild.id).value();
             if (guildData === undefined || guildData === {}) {
@@ -123,10 +123,10 @@ if (cluster.isWorker) {
                 receiver = receiver.user;
             }
 
-            if (guildData.balance[message.author.id] === undefined || ((guildData.balance[message.author.id] === NaN || guildData.balance[message.author.id] === Infinity) && message.member.hasPermission('MANAGE_GUILD')))
+            if (guildData.balance[message.author.id] === undefined || ((guildData.balance[message.author.id] === NaN || guildData.balance[message.author.id] === Infinity) && !message.member.hasPermission('MANAGE_GUILD')))
                 guildData.balance[message.author.id] = 0;
                 
-            if (guildData.balance[receiver.id] === undefined || ((guildData.balance[receiver.id] === NaN || guildData.balance[receiver.id] === Infinity) && receiver.hasPermission('MANAGE_GUILD')))
+            if (guildData.balance[receiver.id] === undefined || ((guildData.balance[receiver.id] === NaN || guildData.balance[receiver.id] === Infinity) && !receiver.hasPermission('MANAGE_GUILD')))
                 guildData.balance[receiver.id] = 0;
                 
             guildData.balance[message.author.id] -= amount;
@@ -176,7 +176,7 @@ if (cluster.isWorker) {
                     return;
                 }
 
-                if (guildData.balance[receiver.id] === undefined || ((guildData.balance[receiver.id] === NaN || guildData.balance[receiver.id] === Infinity) & receiverMember.hasPermission('MANAGE_GUILD')))
+                if (guildData.balance[receiver.id] === undefined || ((guildData.balance[receiver.id] === NaN || guildData.balance[receiver.id] === Infinity) && !receiverMember.hasPermission('MANAGE_GUILD')))
                     guildData.balance[receiver.id] = 0;
                     
                 guildData.balance[receiver.id] += amount;
@@ -222,7 +222,7 @@ if (cluster.isWorker) {
                     return;
                 }
 
-                if (guildData.balance[receiver.id] === undefined || ((guildData.balance[receiver.id] === NaN || guildData.balance[receiver.id] === Infinity) && receiverMember.hasPermission('MANAGE_GUILD')))
+                if (guildData.balance[receiver.id] === undefined || ((guildData.balance[receiver.id] === NaN || guildData.balance[receiver.id] === Infinity) && !receiverMember.hasPermission('MANAGE_GUILD')))
                     guildData.balance[receiver.id] = 0;
                     
                 guildData.balance[receiver.id] -= amount;
