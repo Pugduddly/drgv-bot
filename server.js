@@ -22,15 +22,9 @@ if (cluster.isWorker) {
 	const Discord = require('discord.js');
 	const client = new Discord.Client();
     const config = require('./config.json');
-    
-    const maxStats = {
-        food: 8,
-        thirst: 6,
-        tiredness: 20
-    };
 
 	client.on('ready', () => {
-		client.user.setActivity('all of your commands!', { type: 'LISTENING' });
+		client.user.setActivity('m!help', { type: 'LISTENING' });
         avatarURL = client.user.avatarURL;
         username = client.user.username;
     });
@@ -87,7 +81,7 @@ if (cluster.isWorker) {
             }
             
             let balance = guildData.balance[user.id];
-            if (balance === undefined)
+            if (balance === undefined || balance === NaN || balance === Infinity)
                 balance = 0;
 
             sendEmbedMsg(message.channel, user.username + '\'s balance is ' + balance + ' ' + guildData.units + '.');
@@ -112,7 +106,7 @@ if (cluster.isWorker) {
                 }
             }
 
-            if (amount === undefined) {
+            if (amount === undefined || amount === NaN || amount === Infinity) {
                 sendEmbedMsg(message.channel, 'Amount not found/Amount is not a number');
                 return;
             }
@@ -129,10 +123,10 @@ if (cluster.isWorker) {
                 receiver = receiver.user;
             }
 
-            if (guildData.balance[message.author.id] === undefined)
+            if (guildData.balance[message.author.id] === undefined || guildData.balance[message.author.id] === NaN || guildData.balance[message.author.id] === Infinity)
                 guildData.balance[message.author.id] = 0;
                 
-            if (guildData.balance[receiver.id] === undefined)
+            if (guildData.balance[receiver.id] === undefined || guildData.balance[receiver.id] === NaN || guildData.balance[receiver.id] === Infinity)
                 guildData.balance[receiver.id] = 0;
                 
             guildData.balance[message.author.id] -= amount;
@@ -171,7 +165,7 @@ if (cluster.isWorker) {
                     }
                 }
 
-                if (amount === undefined) {
+                if (amount === undefined || amount === NaN || amount === Infinity) {
                     sendEmbedMsg(message.channel, 'Amount not found/Amount is not a number');
                     return;
                 }
@@ -181,7 +175,7 @@ if (cluster.isWorker) {
                     return;
                 }
 
-                if (guildData.balance[receiver.id] === undefined)
+                if (guildData.balance[receiver.id] === undefined || guildData.balance[receiver.id] === NaN || guildData.balance[receiver.id] === Infinity)
                     guildData.balance[receiver.id] = 0;
                     
                 guildData.balance[receiver.id] += amount;
@@ -216,7 +210,7 @@ if (cluster.isWorker) {
                     }
                 }
 
-                if (amount === undefined) {
+                if (amount === undefined || amount === NaN || amount === Infinity) {
                     sendEmbedMsg(message.channel, 'Amount not found/Amount is not a number');
                     return;
                 }
@@ -226,7 +220,7 @@ if (cluster.isWorker) {
                     return;
                 }
 
-                if (guildData.balance[receiver.id] === undefined)
+                if (guildData.balance[receiver.id] === undefined || guildData.balance[receiver.id] === NaN || guildData.balance[receiver.id] === Infinity)
                     guildData.balance[receiver.id] = 0;
                     
                 guildData.balance[receiver.id] -= amount;
